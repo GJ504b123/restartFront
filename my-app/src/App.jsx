@@ -3,7 +3,10 @@ import { useState } from 'react'
 // import viteLogo from '/vite.svg'
 import './App.css'
 import StaticCard from './StaticCard.jsx'
-
+import NavBar from './navbar.jsx'
+import PatientTable from './PatientTable.jsx'
+import Counter from './Counter.jsx'
+import ColorGet from './ColorGet.jsx'
 function App() {
   const [activeTitle, setActiveTitle] = useState("请选择卡片")
   const navData = [
@@ -35,6 +38,12 @@ function App() {
       }
       {/* <StaticCard/> */}
     </div>
+    <div style={{position:'fixed', marginLeft:'600px'}}> 
+      <NavBar />
+    </div>
+    <PatientTable/>
+      <Counter/>
+      <ColorGet/>
     </>
   )
 }
