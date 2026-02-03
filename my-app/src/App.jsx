@@ -1,51 +1,108 @@
-import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-import './App.css'
-import StaticCard from './StaticCard.jsx'
-import NavBar from './navbar.jsx'
-import PatientTable from './PatientTable.jsx'
-import Counter from './Counter.jsx'
-import ColorGet from './ColorGet.jsx'
-function App() {
-  const [activeTitle, setActiveTitle] = useState("请选择卡片")
-  const navData = [
-    {title:"今日待处理",count:12},
-    {title:"本月新增",count:28},
-    {title:"待审查成功病历",count:5},
-    {title:"需要重新诊断",count:2}
-]
-  const handleChildClick = (name) =>{
-    setActiveTitle(name)
-  }
-  return (
-    <>
-    <h1>
-      当前的title：{activeTitle}
-    </h1>
-    <div className="nav-box " style={{display:'flex',gap:'20px',flexWrap:'wrap'}}>
-      {
-        // navData.map((item,i) =>{
-        //   <StaticCard key = {i} title={item.title} count = {item.count}/>
-        // })//错误的大括号，有大括号就要写return
-      }
-      {
-        navData.map((item,i) =>{
-          return(
-            <StaticCard title = {item.title} count = {item.count} key={i} onCardClick= {handleChildClick} />
-          )
-        })
-      }
-      {/* <StaticCard/> */}
-    </div>
-    <div style={{position:'fixed', marginLeft:'600px'}}> 
-      <NavBar />
-    </div>
-    <PatientTable/>
-      <Counter/>
-      <ColorGet/>
-    </>
-  )
-}
+import React from 'react';
 
-export default App
+import { Flex, Space, Table, Tag } from 'antd';
+const columns = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    render: text => <>
+      {text.includes('Jim')&&<Tag color="error">重点关注</Tag>}
+      {/* a && b:a成立就渲染b */}
+      {<a>{text}</a>}
+    </>,
+    filters:[
+      {
+      text:'姓 J 的',value:'J'
+    },
+      {
+      text:'姓 K 的',value:'K'
+    },
+  ],
+  onFilter:(value,record) =>record.name.startsWith(value),
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+    key: 'age',
+    // render:text =><span style={{color:text>40? 'red':''}}>{text +"岁"}</span>
+    render:text =><span style={text>40?{color:'red'}:undefined}>{text +"岁"}</span>,//这个更好，先执行判断再决定要不要绑定css
+    sorter:(a,b) =>a.age - b.age
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    key: 'address',
+    filters:[
+      {text:'纽约',value:'New York'},
+      {text:'伦敦',value:'London'},
+      
+    ],
+    onFilter:(value,record) =>record.address.startsWith(value),
+  },
+  {
+    title: 'Tags',
+    key: 'tags',
+    dataIndex: 'tags',
+    render: (_, { tags }) => (
+      <Flex gap="small" align="center" wrap>
+        {tags.map(tag => {
+          let color = tag.length > 5 ? 'geekblue' : 'green';
+          if (tag === 'loser') {
+            color = 'volcano';
+          }
+          return (
+            <Tag color={color} key={tag}>
+              {tag.toUpperCase()}
+            </Tag>
+          );
+        })},
+
+      </Flex>
+    ),
+  },
+  {
+    title: 'Action',
+    key: 'action',
+    render: (_, record) => (
+      <Space size="middle">
+        <a>Invite {record.name}</a>
+        <a>Delete</a>
+        <a onClick={()=>console.log(`你好，来自${record.address}的${record.name}!`)}>greet</a>
+      </Space>
+    ),
+  },
+];
+const data = [
+  {
+    key: '1',
+    name: 'John Brown',
+    age: 32,
+    address: 'New York No. 1 Lake Park',
+    tags: ['nice', 'developer'],
+  },
+  {
+    key: '2',
+    name: 'Jim Green',
+    
+    age: 42,
+    address: 'London No. 1 Lake Park',
+    tags: ['loser'],
+  },
+  {
+    key: '3',
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sydney No. 1 Lake Park',
+    tags: ['cool', 'teacher'],
+  },
+  {
+    key: '4',
+    name: 'Ken Black',
+    age: 49,
+    address: '  No. 5 Lake Park',
+    tags: ['joker', 'teacher'],
+  },
+];
+const App = () => <Table columns={columns} dataSource={data} />;
+export default App;
